@@ -1,0 +1,28 @@
+#specify the provider and access details
+provider "aws" {
+  access_key = "AKIAYPP3TF36VYIP2UJY"
+  secret_key = "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"
+  region = "ap-south-1"
+}
+#create EC2 instance
+resource "aws_instance" "myInstance" {
+  ami           = "ami-0bcf5425cdc1d8a85"
+  instance_type = "t2.micro"
+}
+
+#install nginx
+provisioner "remote-exec" {
+    inline = [
+      "sudo apt-get -y update",
+      "sudo apt-get -y install nginx",
+      "sudo service nginx start",
+    ]
+ connection {
+  type = "ssh"
+  private_key = "${file("terraform.pem")}"
+  timeout = "2m"
+  agent = false
+
+  }
+}
+
